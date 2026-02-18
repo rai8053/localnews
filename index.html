@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocalBeat — Your City, Delivered</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --accent: #e8431a;
+    --gold: #c9a84c;
+    --muted: #7a7368;
+    --border: #d4cfc4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .masthead-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--paper);
+  }
+
+  .masthead-logo span { color: var(--accent); }
+
+  .masthead-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .masthead-nav {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .masthead-nav a {
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .masthead-nav a:hover { opacity: 1; color: var(--accent); }
+
+  /* CITY SELECTOR BAR */
+  .city-bar {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+  }
+
+  .city-bar label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+
+  .city-btn {
+    padding: 5px 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .city-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .city-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    min-height: 420px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .hero-main {
+    padding: 48px 40px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+
+  .subscribe-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+  }
+
+  .subscribe-form input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 2px solid var(--ink);
+    border-right: none;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+  }
+
+  .subscribe-form select {
+    padding: 14px 12px;
+    border: 2px solid var(--ink);
+    border-right: none;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .subscribe-form button {
+    padding: 14px 24px;
+    background: var(--accent);
+    color: white;
+    border: 2px solid var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .subscribe-form button:hover { background: var(--ink); border-color: var(--ink); }
+
+  .hero-sidebar {
+    padding: 32px 28px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .sidebar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(245,240,232,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  /* MAIN CONTENT */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    max-width: 100%;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .news-column {
+    padding: 40px 40px 40px 40px;
+    border-right: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .section-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* NEWS ARTICLES */
+  .article-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+    animation: fadeInUp 0.4s ease both;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .article-card:hover { background: rgba(232, 67, 26, 0.02); }
+  .article-card:last-child { border-bottom: none; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .article-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .article-tag .source { color: var(--muted); }
+
+  .article-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    color: var(--ink);
+    transition: color 0.2s;
+  }
+
+  .article-card:hover .article-headline { color: var(--accent); }
+
+  .article-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .article-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .article-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .read-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* SIDEBAR */
+  .right-sidebar {
+    padding: 40px 28px;
+  }
+
+  .newsletter-preview {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px;
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+
+  .nl-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .nl-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .nl-meta {
+    font-size: 12px;
+    color: rgba(245,240,232,0.5);
+    margin-bottom: 16px;
+  }
+
+  .nl-contents {
+    list-style: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 16px;
+  }
+
+  .nl-contents li {
+    font-size: 13px;
+    color: rgba(245,240,232,0.7);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    gap: 8px;
+  }
+
+  .nl-num {
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    min-width: 16px;
+  }
+
+  /* WEATHER / EVENTS */
+  .widget {
+    margin-bottom: 28px;
+  }
+
+  .widget-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--muted);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .event-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .event-item:last-child { border: none; }
+
+  .event-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .event-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* API KEY INPUT */
+  .api-banner {
+    background: linear-gradient(135deg, #1a1208, #2a1f0a);
+    border: 1px solid var(--gold);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .api-banner-text {
+    font-size: 13px;
+    color: rgba(245,240,232,0.8);
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .api-banner-text strong {
+    color: var(--gold);
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .api-input-row {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .api-input-row input {
+    flex: 1;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-right: none;
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+  }
+
+  .api-input-row input::placeholder { color: rgba(245,240,232,0.3); }
+
+  .api-input-row button {
+    padding: 10px 20px;
+    background: var(--gold);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .api-input-row button:hover { background: #e0bc5a; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 40px 32px;
+    border-top: 3px solid var(--accent);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-tagline {
+    font-size: 14px;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.6;
+  }
+
+  .footer-col-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+    padding: 5px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul li:hover { color: var(--paper); }
+
+  .footer-bottom {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(245,240,232,0.3);
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 20px;
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+    max-width: 320px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ERROR */
+  .error-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .error-state .error-icon { font-size: 32px; margin-bottom: 12px; }
+  .error-state p { font-size: 14px; line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-sidebar { display: none; }
+    .main-grid { grid-template-columns: 1fr; }
+    .right-sidebar { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .masthead-nav { display: none; }
+    .hero-headline { font-size: 42px; }
+    .api-banner { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-logo">Local<span>Beat</span></div>
+  <div class="masthead-date" id="masthead-date"></div>
+  <nav>
+    <ul class="masthead-nav">
+      <li><a href="#news">News</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#deals">Deals</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- API STATUS BAR -->
+<div style="background:#1a2e1a;border-bottom:1px solid #2d5a2d;padding:8px 40px;display:flex;align-items:center;gap:10px;">
+  <span style="width:8px;height:8px;background:#4caf50;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
+  <span style="font-family:'DM Mono',monospace;font-size:11px;color:#7ec97e;text-transform:uppercase;letter-spacing:2px;">Live via NewsData.io API · Auto-refreshing every 10 min</span>
+</div>
+
+<!-- CITY SELECTOR -->
+<div class="city-bar">
+  <label>Edition:</label>
+  <button class="city-btn active" onclick="selectCity(this, 'Bengaluru')">Bengaluru</button>
+  <button class="city-btn" onclick="selectCity(this, 'Mumbai')">Mumbai</button>
+  <button class="city-btn" onclick="selectCity(this, 'Delhi')">Delhi</button>
+  <button class="city-btn" onclick="selectCity(this, 'Hyderabad')">Hyderabad</button>
+  <button class="city-btn" onclick="selectCity(this, 'Chennai')">Chennai</button>
+  <button class="city-btn" onclick="selectCity(this, 'Pune')">Pune</button>
+  <button class="city-btn" onclick="selectCity(this, 'Kolkata')">Kolkata</button>
+  <button class="city-btn" onclick="selectCity(this, 'Ahmedabad')">Ahmedabad</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-main">
+    <div>
+      <div class="hero-eyebrow">
+        <div class="live-dot"></div>
+        <span>Live Edition — <span id="city-name">Bengaluru</span></span>
+      </div>
+      <h1 class="hero-headline">Your City.<br><em>This Week.</em></h1>
+      <p class="hero-sub">Hyper-local news, events, deals & weather — delivered every Friday morning. Curated by AI, reviewed by locals. 50,000+ readers across India's top cities.</p>
+    </div>
+    <form class="subscribe-form" onsubmit="handleSubscribe(event)">
+      <input type="email" placeholder="you@email.com" id="sub-email" />
+      <select id="sub-city">
+        <option>Bengaluru</option>
+        <option>Mumbai</option>
+        <option>Delhi</option>
+        <option>Hyderabad</option>
+        <option>Chennai</option>
+        <option>Pune</option>
+      </select>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="hero-sidebar">
+    <div class="sidebar-title">Platform Stats</div>
+    <div class="stat-row">
+      <span class="stat-label">Subscribers</span>
+      <span class="stat-value">50K+</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Cities Live</span>
+      <span class="stat-value">12</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Avg. Open Rate</span>
+      <span class="stat-value">35%</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Automation</span>
+      <span class="stat-value">85%</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Stories/Week</span>
+      <span class="stat-value">150+</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="main-grid" id="news">
+  <div class="news-column">
+    <div class="section-header">
+      <h2 class="section-title">Top Stories — <span id="news-city-label">Bengaluru</span></h2>
+      <span class="section-meta" id="news-timestamp">Refreshing...</span>
+    </div>
+    <div id="articles-container">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Enter your API key above to load live news</div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="right-sidebar">
+    <div class="newsletter-preview">
+      <div class="nl-header">📬 This Friday's Newsletter</div>
+      <div class="nl-title" id="nl-title">Bengaluru Weekly Beat</div>
+      <div class="nl-meta" id="nl-meta">Next edition · Friday 8AM</div>
+      <ul class="nl-contents">
+        <li><span class="nl-num">01</span>Top 3 city stories (100w each)</li>
+        <li><span class="nl-num">02</span>4 upcoming events this weekend</li>
+        <li><span class="nl-num">03</span>2 local deals & restaurant picks</li>
+        <li><span class="nl-num">04</span>Weather & traffic update</li>
+        <li><span class="nl-num">05</span>Your neighbourhood greeting</li>
+      </ul>
+    </div>
+
+    <div class="widget" id="events">
+      <div class="widget-title">🗓 Weekend Events</div>
+      <div id="events-list">
+        <div class="event-item">
+          <div class="event-date">SAT · 22 FEB</div>
+          <div class="event-name">Bangalore Literature Festival — Cubbon Park</div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">SAT · 22 FEB</div>
+          <div class="event-name">Tech Startup Networking Night — Koramangala</div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">SUN · 23 FEB</div>
+          <div class="event-name">Farmers Market — Indiranagar 100ft Road</div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">SUN · 23 FEB</div>
+          <div class="event-name">Half Marathon — Ulsoor Lake</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="widget" id="deals">
+      <div class="widget-title">🏷 Local Deals</div>
+      <div id="deals-list">
+        <div class="event-item">
+          <div class="event-date">FOOD</div>
+          <div class="event-name">Truffles — 30% off on weekday lunch orders above ₹500</div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">WELLNESS</div>
+          <div class="event-name">CureFit HSR — First month membership at ₹999</div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">RETAIL</div>
+          <div class="event-name">Decathlon Whitefield — Cycling gear 20% off this weekend</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- FOOTER -->
+<footer id="about">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Local<span>Beat</span></div>
+      <p class="footer-tagline">Hyper-local weekly newsletters for 50+ Indian cities. Automating city journalism with AI — one Friday at a time.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Editions</div>
+      <ul>
+        <li>Bengaluru</li><li>Mumbai</li><li>Delhi</li>
+        <li>Hyderabad</li><li>Chennai</li><li>Pune</li>
+        <li>Kolkata +6 more</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Platform</div>
+      <ul>
+        <li>For Subscribers</li><li>For City Operators</li>
+        <li>Advertise Locally</li><li>Partner With Us</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul>
+        <li>About LocalBeat</li><li>Privacy Policy</li>
+        <li>Unsubscribe</li><li>Contact</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 LocalBeat. Bengaluru, India.</span>
+    <span>Powered by NewsData.io · Beehiiv · OpenAI</span>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const NEWSDATA_KEY = 'pub_0b4b3d7842c74ae1b52aa7dba33628c8';
+  let currentCity = 'Bengaluru';
+
+  // Set date
+  document.getElementById('masthead-date').textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // City events data
+  const cityEvents = {
+    'Bengaluru': [
+      { date: 'SAT · 22 FEB', name: 'Bangalore Literature Festival — Cubbon Park' },
+      { date: 'SAT · 22 FEB', name: 'Tech Startup Networking Night — Koramangala' },
+      { date: 'SUN · 23 FEB', name: 'Farmers Market — Indiranagar 100ft Road' },
+      { date: 'SUN · 23 FEB', name: 'Half Marathon — Ulsoor Lake' },
+    ],
+    'Mumbai': [
+      { date: 'SAT · 22 FEB', name: 'Bandra Street Art Walk — Hill Road' },
+      { date: 'SAT · 22 FEB', name: 'Marine Drive Sunrise Run' },
+      { date: 'SUN · 23 FEB', name: 'Juhu Artisan Market' },
+      { date: 'SUN · 23 FEB', name: 'Comedy Night — Lower Parel' },
+    ],
+    'Delhi': [
+      { date: 'SAT · 22 FEB', name: 'Dilli Haat Winter Bazaar' },
+      { date: 'SAT · 22 FEB', name: 'Lodi Garden Photography Walk' },
+      { date: 'SUN · 23 FEB', name: 'Hauz Khas Flea Market' },
+      { date: 'SUN · 23 FEB', name: 'Khan Market Book Fair' },
+    ],
+  };
+
+  const cityDeals = {
+    'Bengaluru': [
+      { cat: 'FOOD', deal: 'Truffles — 30% off on weekday lunch orders above ₹500' },
+      { cat: 'WELLNESS', deal: 'CureFit HSR — First month membership at ₹999' },
+      { cat: 'RETAIL', deal: 'Decathlon Whitefield — Cycling gear 20% off this weekend' },
+    ],
+    'Mumbai': [
+      { cat: 'FOOD', deal: 'Bastian Bandra — 25% off on Sunday brunch till 3PM' },
+      { cat: 'WELLNESS', deal: 'Cult.fit Andheri — Try 10 classes at ₹799' },
+      { cat: 'RETAIL', deal: 'Zara Palladium — End of season sale up to 50% off' },
+    ],
+    'Delhi': [
+      { cat: 'FOOD', deal: 'Indian Accent — Tasting menu for 2 at ₹4999 this weekend' },
+      { cat: 'WELLNESS', deal: 'Innov8 Coworking — Day pass at ₹299 on weekdays' },
+      { cat: 'RETAIL', deal: 'DLF Mall — Flat ₹500 off on ₹2000+ purchase' },
+    ],
+  };
+
+  // Auto-load on page start
+  window.addEventListener('DOMContentLoaded', () => fetchNews(currentCity));
+
+  function selectCity(btn, city) {
+    document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCity = city;
+    document.getElementById('city-name').textContent = city;
+    document.getElementById('news-city-label').textContent = city;
+    document.getElementById('nl-title').textContent = `${city} Weekly Beat`;
+    document.getElementById('sub-city').value = city;
+    updateSidebars(city);
+    fetchNews(city);
+  }
+
+  function updateSidebars(city) {
+    const events = cityEvents[city] || cityEvents['Bengaluru'];
+    document.getElementById('events-list').innerHTML = events.map(e => `
+      <div class="event-item">
+        <div class="event-date">${e.date}</div>
+        <div class="event-name">${e.name}</div>
+      </div>
+    `).join('');
+
+    const deals = cityDeals[city] || cityDeals['Bengaluru'];
+    document.getElementById('deals-list').innerHTML = deals.map(d => `
+      <div class="event-item">
+        <div class="event-date">${d.cat}</div>
+        <div class="event-name">${d.deal}</div>
+      </div>
+    `).join('');
+  }
+
+  async function fetchNews(city) {
+    const container = document.getElementById('articles-container');
+    container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><div class="loading-text">Fetching ${city} stories...</div></div>`;
+    document.getElementById('news-timestamp').textContent = 'Loading...';
+
+    try {
+      // NewsData.io — native HTTPS, no proxy needed ✅
+      const query = encodeURIComponent(city);
+      const url = `https://newsdata.io/api/1/news?apikey=${NEWSDATA_KEY}&q=${query}&country=in&language=en&category=top,business,entertainment,lifestyle`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.status !== 'success') throw new Error(data.message || 'API error');
+
+      const articles = (data.results || []).filter(a => a.title && a.title !== 'N/A');
+
+      if (articles.length === 0) {
+        container.innerHTML = `<div class="error-state"><div class="error-icon">📰</div><p>No stories found for ${city} right now. Try another city.</p></div>`;
+        return;
+      }
+
+      const now = new Date();
+      document.getElementById('news-timestamp').textContent = `Updated ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+
+      container.innerHTML = articles.slice(0, 10).map((article, i) => {
+        const pubDate = article.pubDate ? new Date(article.pubDate) : null;
+        const timeAgo = pubDate ? getTimeAgo(pubDate) : '';
+        const category = Array.isArray(article.category) ? article.category.join(', ').toUpperCase() : 'NEWS';
+        const source = article.source_id || 'News';
+
+        return `
+          <div class="article-card" style="animation-delay: ${i * 0.07}s" onclick="window.open('${article.link}', '_blank')">
+            <div class="article-tag">
+              <span>${category}</span>
+              <span class="source">via ${source}</span>
+            </div>
+            <div class="article-headline">${escapeHtml(article.title)}</div>
+            ${article.description && article.description !== 'N/A' ? `<div class="article-desc">${escapeHtml(article.description)}</div>` : ''}
+            <div class="article-footer">
+              <span class="article-time">${timeAgo}</span>
+              <a class="read-link" href="${article.link}" target="_blank" onclick="event.stopPropagation()">Read →</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } catch (err) {
+      container.innerHTML = `
+        <div class="error-state">
+          <div class="error-icon">⚠️</div>
+          <p><strong>Could not load news.</strong><br>${err.message}</p>
+          <br>
+          <p style="font-size:12px;color:var(--muted)">Check your internet connection and try again.</p>
+        </div>
+      `;
+      document.getElementById('news-timestamp').textContent = 'Error';
+    }
+  }
+
+  function getTimeAgo(date) {
+    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+    return `${Math.floor(diff/86400)}d ago`;
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function handleSubscribe(e) {
+    e.preventDefault();
+    const email = document.getElementById('sub-email').value;
+    const city = document.getElementById('sub-city').value;
+    if (!email) return;
+    showToast(`✓ You're subscribed to ${city} Weekly Beat! Check your inbox Friday.`);
+    document.getElementById('sub-email').value = '';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  // Auto-refresh every 10 minutes
+  setInterval(() => fetchNews(currentCity), 600000);
+</script>
+</body>
+</html>
