@@ -735,26 +735,26 @@
     </form>
   </div>
   <div class="hero-sidebar">
-    <div class="sidebar-title">Platform Stats</div>
+    <div class="sidebar-title">Live Feed Stats</div>
     <div class="stat-row">
-      <span class="stat-label">Subscribers</span>
-      <span class="stat-value">50K+</span>
+      <span class="stat-label">Articles Found</span>
+      <span class="stat-value" id="stat-articles">—</span>
     </div>
     <div class="stat-row">
-      <span class="stat-label">Cities Live</span>
-      <span class="stat-value">12</span>
+      <span class="stat-label">Unique Sources</span>
+      <span class="stat-value" id="stat-sources">—</span>
     </div>
     <div class="stat-row">
-      <span class="stat-label">Avg. Open Rate</span>
-      <span class="stat-value">35%</span>
+      <span class="stat-label">Categories</span>
+      <span class="stat-value" id="stat-categories">—</span>
     </div>
     <div class="stat-row">
-      <span class="stat-label">Automation</span>
-      <span class="stat-value">85%</span>
+      <span class="stat-label">Total Available</span>
+      <span class="stat-value" id="stat-total">—</span>
     </div>
     <div class="stat-row">
-      <span class="stat-label">Stories/Week</span>
-      <span class="stat-value">150+</span>
+      <span class="stat-label">Last Updated</span>
+      <span class="stat-value" id="stat-updated" style="font-size:14px;">—</span>
     </div>
   </div>
 </section>
@@ -955,6 +955,9 @@
     const container = document.getElementById('articles-container');
     container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><div class="loading-text">Fetching ${city} stories...</div></div>`;
     document.getElementById('news-timestamp').textContent = 'Loading...';
+    ['stat-articles','stat-sources','stat-categories','stat-total','stat-updated'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
 
     try {
       // NewsData.io — native HTTPS, no proxy needed ✅
@@ -974,7 +977,17 @@
       }
 
       const now = new Date();
-      document.getElementById('news-timestamp').textContent = `Updated ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+      const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('news-timestamp').textContent = `Updated ${timeStr}`;
+
+      // Live stats from API response
+      const uniqueSources = [...new Set(articles.map(a => a.source_id).filter(Boolean))];
+      const uniqueCategories = [...new Set(articles.flatMap(a => a.category || []))];
+      document.getElementById('stat-articles').textContent = articles.length;
+      document.getElementById('stat-sources').textContent = uniqueSources.length;
+      document.getElementById('stat-categories').textContent = uniqueCategories.length;
+      document.getElementById('stat-total').textContent = data.totalResults ? data.totalResults.toLocaleString() : articles.length;
+      document.getElementById('stat-updated').textContent = timeStr;
 
       container.innerHTML = articles.slice(0, 10).map((article, i) => {
         const pubDate = article.pubDate ? new Date(article.pubDate) : null;
